@@ -1236,7 +1236,7 @@ let state = {
   sessionXP: 0, sessionCorrect: 0, sessionTotal: 0, sessionTimes: [],
   currentQ: 0, questions: [], answered: false,
   timerEnabled: true,
-  timeLeft: 30, timer: null, questionStart: 0,
+  timeLeft: 60, timer: null, questionStart: 0,
   mode: 'quickfire', topic: null,
   topicStats: JSON.parse(localStorage.getItem('topicStats') || '{}'),
   totalXP: parseInt(localStorage.getItem('totalXP') || '0'),
@@ -1978,7 +1978,7 @@ function renderQuestion() {
   const ring = document.getElementById('timer-ring');
   if (state.timerEnabled) {
     ring.style.display = '';
-    state.timeLeft = 30;
+    state.timeLeft = 60;
     updateTimer();
     state.timer = setInterval(() => {
       state.timeLeft--;
@@ -2021,7 +2021,7 @@ function updateTimer() {
   const arc = document.getElementById('timer-arc');
   const numEl = document.getElementById('timer-num');
   const circum = 119.4;
-  arc.style.strokeDashoffset = circum * (1 - t/30);
+  arc.style.strokeDashoffset = circum * (1 - t/60);
   arc.style.stroke = t > 10 ? '#3b82f6' : t > 5 ? '#f59e0b' : '#ef4444';
   numEl.textContent = t;
   if (t <= 5) numEl.style.color = '#ef4444';
