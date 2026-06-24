@@ -480,7 +480,8 @@ details.concept-card .concept-body{padding:0 16px 16px;display:block;border-top:
 <!-- ASSIGNMENT PLAYER -->
 <div id="screen-assignment-player" class="screen">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <button class="back-btn" style="margin:0" onclick="showAssignments()">← Back</button>
+    <button class="back-btn" style="margin:0" onclick="showAssignments()">← Assignments</button>
+    <button class="back-btn" style="margin:0" onclick="showScreen('home')">🏠</button>
     <div style="flex:1">
       <div style="font-weight:800;font-size:.95rem" id="asgn-title"></div>
       <div style="font-size:.75rem;color:var(--text3)" id="asgn-progress-label"></div>
@@ -502,6 +503,7 @@ details.concept-card .concept-body{padding:0 16px 16px;display:block;border-top:
 <!-- QUIZ -->
 <div id="screen-quiz" class="screen">
   <div class="quiz-header">
+    <button onclick="quitToHome()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:4px 10px;color:var(--text3);font-size:.75rem;cursor:pointer;flex-shrink:0" title="Quit to home">✕</button>
     <div class="lives" id="lives-display"></div>
     <div class="streak-badge hidden" id="streak-badge">🔥 0</div>
     <button id="timer-toggle-btn" onclick="toggleTimer()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:4px 8px;color:var(--text2);font-size:.7rem;cursor:pointer;white-space:nowrap">⏱ ON</button>
@@ -533,6 +535,7 @@ details.concept-card .concept-body{padding:0 16px 16px;display:block;border-top:
 
 <!-- FEEDBACK -->
 <div id="screen-feedback" class="screen">
+  <button onclick="quitToHome()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--text3);font-size:.75rem;cursor:pointer;margin-bottom:12px">✕ Home</button>
   <div class="feedback-card" id="feedback-card">
     <div class="feedback-icon" id="fb-icon"></div>
     <div class="feedback-result" id="fb-result"></div>
@@ -1990,6 +1993,11 @@ function renderQuestion() {
   }
 
   showScreen('quiz');
+}
+
+function quitToHome() {
+  clearInterval(state.timer);
+  endSession();
 }
 
 function toggleTimer() {
