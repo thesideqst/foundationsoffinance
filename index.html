@@ -513,7 +513,7 @@ details.concept-card .concept-body{padding:0 16px 16px;display:block;border-top:
         <circle class="timer-fill" id="timer-arc" cx="22" cy="22" r="19"
           stroke-dasharray="119.4" stroke-dashoffset="0"/>
       </svg>
-      <div class="timer-num" id="timer-num">30</div>
+      <div class="timer-num" id="timer-num">60</div>
     </div>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="quiz-progress"></div></div>
@@ -2022,10 +2022,10 @@ function updateTimer() {
   const numEl = document.getElementById('timer-num');
   const circum = 119.4;
   arc.style.strokeDashoffset = circum * (1 - t/60);
-  arc.style.stroke = t > 10 ? '#3b82f6' : t > 5 ? '#f59e0b' : '#ef4444';
+  arc.style.stroke = t > 20 ? '#3b82f6' : t > 10 ? '#f59e0b' : '#ef4444';
   numEl.textContent = t;
-  if (t <= 5) numEl.style.color = '#ef4444';
-  else if (t <= 10) numEl.style.color = '#f59e0b';
+  if (t <= 10) numEl.style.color = '#ef4444';
+  else if (t <= 20) numEl.style.color = '#f59e0b';
   else numEl.style.color = '#f1f5f9';
 }
 
