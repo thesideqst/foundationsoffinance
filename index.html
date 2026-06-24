@@ -333,7 +333,7 @@ details.concept-card .concept-body{padding:0 16px 16px;display:block;border-top:
 <div id="flash" class="flash-overlay"></div>
 
 <!-- HOME -->
-<div id="screen-home" class="screen active">
+<div id="screen-home" class="screen">
   <div class="home-top">
     <div class="game-title">FINANCE QUEST</div>
     <div class="game-sub">NYU STERN · FOUNDATIONS OF FINANCE · FINAL PREP</div>
@@ -418,6 +418,23 @@ details.concept-card .concept-body{padding:0 16px 16px;display:block;border-top:
   <div class="screen-title">📖 Deep Study Guide</div>
   <div class="screen-sub">Tap any topic to expand. Read until you can explain it to someone else.</div>
   <div id="studyguide-list"></div>
+</div>
+
+<!-- PASSWORD SCREEN -->
+<div id="screen-password" class="screen active" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px">
+  <div style="text-align:center;max-width:360px;width:100%">
+    <div style="font-size:3rem;margin-bottom:12px">⚡</div>
+    <div style="font-size:2rem;font-weight:900;background:linear-gradient(135deg,#a855f7,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px">FINANCE QUEST</div>
+    <div style="font-size:.8rem;color:var(--text3);margin-bottom:32px;letter-spacing:.5px">NYU STERN · FOUNDATIONS OF FINANCE</div>
+    <input id="pw-input" type="password" placeholder="Enter password" maxlength="40"
+      style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;color:var(--text);font-size:1rem;outline:none;text-align:center;margin-bottom:10px;letter-spacing:2px"
+      onkeydown="if(event.key==='Enter')checkPassword()"/>
+    <button onclick="checkPassword()"
+      style="width:100%;background:linear-gradient(135deg,var(--accent),var(--blue));border:none;border-radius:12px;padding:14px;color:#fff;font-weight:900;font-size:1rem;cursor:pointer;margin-bottom:10px">
+      Enter →
+    </button>
+    <div id="pw-error" style="color:var(--red2);font-size:.82rem;display:none">Wrong password. Ask Aliya 👀</div>
+  </div>
 </div>
 
 <!-- ASSIGNMENTS LIST -->
@@ -2084,6 +2101,7 @@ function endSession() {
 
   saveState();
   renderHomeTopics();
+  autoPostScore();
   showScreen('end');
 }
 
@@ -2626,7 +2644,24 @@ function showConcepts() {
 // INIT
 // ============================================================
 // ============================================================
-// FIREBASE — paste your config below
+// PASSWORD
+// ============================================================
+const GAME_PASSWORD = 'wheresmyalpha';
+
+function checkPassword() {
+  const val = document.getElementById('pw-input').value.trim();
+  if (val === GAME_PASSWORD) {
+    localStorage.setItem('fq_auth', '1');
+    showScreen('home');
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').style.borderColor = 'var(--red)';
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+// ============================================================
+// FIREBASE
 // ============================================================
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyDzDrvQ9VEHIftV39s07rQsZi3EAsOy6pc",
@@ -2639,56 +2674,67 @@ const FIREBASE_CONFIG = {
 };
 
 let db = null;
-let myUserId = localStorage.getItem('lbUserId');
-if (!myUserId) {
-  myUserId = 'u_' + Math.random().toString(36).slice(2, 10);
-  localStorage.setItem('lbUserId', myUserId);
-}
 
 function initFirebase() {
-  if (FIREBASE_CONFIG.apiKey === 'PASTE_API_KEY') return; // not configured yet
   try {
     if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
     db = firebase.database();
   } catch(e) { console.warn('Firebase init failed:', e); }
 }
 
+// Name key: derived from player name so same person = same entry across devices
+function nameToKey(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 30);
+}
+
+function autoPostScore() {
+  const name = localStorage.getItem('lbName');
+  if (!name || !db) return;
+  const key = nameToKey(name);
+  const accuracy = state.sessionTotal > 0
+    ? Math.round(state.sessionCorrect / state.sessionTotal * 100) : 0;
+  db.ref('leaderboard/' + key).once('value', snap => {
+    const existing = snap.val() || {};
+    db.ref('leaderboard/' + key).set({
+      name,
+      xp: Math.max(existing.xp || 0, state.totalXP),
+      level: state.totalLevel,
+      accuracy: existing.sessions
+        ? Math.round(((existing.accuracy || 0) * existing.sessions + accuracy) / (existing.sessions + 1))
+        : accuracy,
+      sessions: (existing.sessions || 0) + 1,
+      updatedAt: Date.now()
+    });
+  });
+}
+
 function showLeaderboard() {
   showScreen('leaderboard');
-  if (!db) { initFirebase(); }
-  if (!db) {
-    document.getElementById('lb-rows').innerHTML =
-      '<div style="padding:20px;text-align:center;color:var(--red2);font-size:.85rem">⚠️ Firebase not configured yet.<br>Paste your config in the HTML file.</div>';
-    return;
-  }
+  if (!db) initFirebase();
+  if (!db) return;
   db.ref('leaderboard').orderByChild('xp').limitToLast(50).on('value', snap => {
     const data = snap.val() || {};
+    const myKey = nameToKey(localStorage.getItem('lbName') || '');
     const players = Object.entries(data)
       .map(([id, p]) => ({...p, id}))
       .sort((a, b) => b.xp - a.xp)
       .slice(0, 30);
-    renderLeaderboard(players);
+    const medals = ['🥇','🥈','🥉'];
+    document.getElementById('lb-rows').innerHTML = players.length === 0
+      ? '<div style="padding:20px;text-align:center;color:var(--text3);font-size:.85rem">No scores yet — be the first!</div>'
+      : players.map((p, i) => {
+          const isMe = p.id === myKey;
+          return `<div class="lb-row${isMe ? ' me' : ''}">
+            <span class="lb-rank">${medals[i] || (i+1)}</span>
+            <div>
+              <div class="lb-name">${escapeHtml(p.name)}${isMe ? ' 👈' : ''}</div>
+              <div class="lb-sub">${p.accuracy||0}% accuracy · ${p.sessions||1} session${(p.sessions||1)>1?'s':''}</div>
+            </div>
+            <span class="lb-lvl">LVL ${p.level||1}</span>
+            <span class="lb-xp">⚡${p.xp.toLocaleString()}</span>
+          </div>`;
+        }).join('');
   });
-}
-
-function renderLeaderboard(players) {
-  const medals = ['🥇','🥈','🥉'];
-  const savedName = localStorage.getItem('lbName') || '';
-  document.getElementById('lb-rows').innerHTML = players.length === 0
-    ? '<div style="padding:20px;text-align:center;color:var(--text3);font-size:.85rem">No scores yet — be the first!</div>'
-    : players.map((p, i) => {
-        const isMe = p.id === myUserId;
-        const rank = medals[i] || (i + 1);
-        return `<div class="lb-row${isMe ? ' me' : ''}">
-          <span class="lb-rank">${rank}</span>
-          <div>
-            <div class="lb-name">${escapeHtml(p.name)}${isMe ? ' 👈' : ''}</div>
-            <div class="lb-sub">${p.accuracy || 0}% accuracy · ${p.sessions || 1} session${(p.sessions||1)>1?'s':''}</div>
-          </div>
-          <span class="lb-lvl">LVL ${p.level || 1}</span>
-          <span class="lb-xp">⚡${p.xp.toLocaleString()}</span>
-        </div>`;
-      }).join('');
 }
 
 function escapeHtml(s) {
@@ -2710,36 +2756,14 @@ function submitScore() {
   const name = document.getElementById('submit-name-input').value.trim();
   if (!name) { document.getElementById('submit-name-input').style.borderColor='var(--red)'; return; }
   localStorage.setItem('lbName', name);
-
-  if (!db) { initFirebase(); }
-  if (!db) { alert('Firebase not configured yet.'); return; }
-
-  const accuracy = state.sessionTotal > 0
-    ? Math.round(state.sessionCorrect / state.sessionTotal * 100) : 0;
-
-  // Read existing record first so we only update if this is a new best
-  db.ref('leaderboard/' + myUserId).once('value', snap => {
-    const existing = snap.val() || {};
-    const newXP = Math.max(existing.xp || 0, state.totalXP);
-    db.ref('leaderboard/' + myUserId).set({
-      name,
-      xp: newXP,
-      level: state.totalLevel,
-      accuracy,
-      sessions: (existing.sessions || 0) + 1,
-      updatedAt: Date.now()
-    });
-  });
-
+  if (!db) initFirebase();
   closeSubmitModal();
+  autoPostScore();
   showLeaderboard();
 }
 
-// Submit on Enter key in name input
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('submit-modal').style.display === 'flex') {
-    submitScore();
-  }
+  if (e.key === 'Enter' && document.getElementById('submit-modal').style.display === 'flex') submitScore();
 });
 
 window.onload = function() {
@@ -2748,7 +2772,13 @@ window.onload = function() {
   state.totalLevel = parseInt(localStorage.getItem('totalLevel') || '1');
   updateHUD();
   renderHomeTopics();
-  showScreen('home');
+  initFirebase();
+  // Check password — skip if already authenticated this browser
+  if (localStorage.getItem('fq_auth') === '1') {
+    showScreen('home');
+  } else {
+    showScreen('password');
+  }
 };
 </script>
 </body>
