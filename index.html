@@ -1972,20 +1972,21 @@ function revealAsgnSolutionInner() {
 
 function revealAsgnSolution() {
   if (asgnState.answered) return;
-  asgnState.answered = true;
   revealAsgnSolutionInner();
   const ansKey = `${asgnState.assignment.id}_${asgnState.currentQ}`;
   const hasAns = !!ASSIGNMENT_ANSWERS[ansKey];
-  const xp = hasAns ? 25 : 100; // penalty for skipping a graded question
-  asgnState.xpEarned += xp;
-  state.totalXP += xp;
-  updateHUD(); saveState();
-  // show self-rate for non-graded, next button for graded
   const selfRate = document.getElementById('asgn-self-rate');
   const nextBtn = document.getElementById('asgn-next-btn');
   if (hasAns) {
+    // graded question skipped — mark done immediately, award penalty XP
+    asgnState.answered = true;
+    const xp = 25;
+    asgnState.xpEarned += xp;
+    state.totalXP += xp;
+    updateHUD(); saveState();
     if (nextBtn) nextBtn.style.display = 'block';
   } else {
+    // conceptual question — don't mark answered yet; wait for self-rate click
     if (selfRate) selfRate.style.display = 'flex';
   }
 }
