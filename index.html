@@ -336,6 +336,21 @@ details.concept-card .concept-body{padding:0 16px 16px;display:block;border-top:
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
 
+/* answer input */
+.ans-input-wrap{padding:14px 16px;border-top:1px solid var(--border)}
+.ans-input-label{font-size:.72rem;color:var(--text2);font-weight:700;letter-spacing:.5px;margin-bottom:8px}
+.ans-row{display:flex;gap:8px}
+.ans-field{flex:1;background:#000;border:2px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--neon-blue,#00f3ff);font-family:monospace;font-size:1rem;font-weight:700;outline:none;text-align:center;transition:border-color .2s}
+.ans-field:focus{border-color:var(--accent)}
+.ans-check-btn{background:linear-gradient(135deg,var(--accent),var(--blue));border:none;border-radius:10px;padding:12px 18px;color:#fff;font-weight:900;font-size:.85rem;cursor:pointer;white-space:nowrap}
+.ans-check-btn:hover{opacity:.9}
+.ans-feedback{padding:10px 14px;border-radius:10px;font-size:.85rem;font-weight:700;margin-top:8px;display:none;align-items:center;gap:8px}
+.ans-feedback.correct{background:#052e16;border:1px solid var(--green);color:var(--green2)}
+.ans-feedback.wrong{background:#450a0a;border:1px solid var(--red);color:var(--red2)}
+.ans-skip{background:none;border:none;color:var(--text3);font-size:.75rem;cursor:pointer;text-decoration:underline;margin-top:6px;display:block;text-align:center}
+.ans-skip:hover{color:var(--text2)}
+.ans-attempts{font-size:.7rem;color:var(--text3);margin-top:4px;text-align:center}
+
 /* boss battle */
 .boss-arena{background:linear-gradient(135deg,#1c0a00,#3b0a0a);border:2px solid var(--red);
   border-radius:16px;padding:18px;margin-bottom:14px}
@@ -1615,6 +1630,68 @@ const EXCEL_TIPS = {
 };
 
 // ============================================================
+// ASSIGNMENT ANSWERS — keyed by assignmentId_questionIndex
+// answer: correct value | fmt: 'dollar','percent','number','text'
+// tolerance: allowed % error (0.02 = ±2%) | for percent: in pct points
+// label: what to ask for | hint: shown after first wrong attempt
+// ============================================================
+const ASSIGNMENT_ANSWERS = {
+  // ── PS1 ──
+  'ps1_0': { answer:0.90,    fmt:'dollar',  tolerance:0.02, label:'Your profit ($)',               hint:'You buy at the ask price, sell at the bid price.' },
+  'ps1_1': { answer:66.51,   fmt:'dollar',  tolerance:0.5,  label:'7-year zero-coupon bond price ($)', hint:'Price = Face / (1 + YTM)^N' },
+  'ps1_2': { answer:4.90,    fmt:'percent', tolerance:0.5,  label:'Bond\'s implied YTM (%)',       hint:'YTM = (Face/Price)^(1/N) − 1, then convert to %' },
+  'ps1_3': { answer:98700,   fmt:'dollar',  tolerance:200,  label:'Perpetuity PV at r=6% ($)',     hint:'PV = C/r, then discount back (n−1) periods' },
+  'ps1_4': { answer:744000,  fmt:'dollar',  tolerance:2000, label:'Warehouse value with 2.5% growth ($)', hint:'GGM: PV = Net Rent / (r − g)' },
+  // ── PS2 ──
+  'ps2_0': { answer:115.54,  fmt:'dollar',  tolerance:0.2,  label:'Amount owed at end of year 2 ($M)', hint:'Refinance: Year 1 repayment × (1 + new rate)' },
+  'ps2_1': { answer:113.83,  fmt:'dollar',  tolerance:3,    label:'Nvidia intrinsic value today ($)',   hint:'Sum PV of 5 dividends + PV of terminal value' },
+  'ps2_2': { answer:7.76,    fmt:'percent', tolerance:0.3,  label:'Apple\'s implied growth rate (%)',   hint:'g = r − (Dividends + Buybacks) / Market Cap' },
+  'ps2_3': { answer:0.86,    fmt:'dollar',  tolerance:0.3,  label:'CoreWeave project NPV ($M)',          hint:'NPV = C0 + NPV(12%, Year1:Year12 cash flows)' },
+  'ps2_4': { answer:-0.41,   fmt:'dollar',  tolerance:0.1,  label:'Vail ski pass NPV ($M)',              hint:'Semi-annual rate = (1.10)^0.5 − 1 = 4.879%' },
+  // ── PS3 ──
+  'ps3_1': { answer:20.0,    fmt:'percent', tolerance:0.5,  label:'75%A/25%B portfolio σ (%)',       hint:'σ²p = wA²σA² + wB²σB² + 2wAwBρσAσB, then √' },
+  'ps3_2': { answer:13.0,    fmt:'percent', tolerance:0.5,  label:'150% S&P 500 portfolio E[R] (%)', hint:'E[Rp] = 1.5×10% + (−0.5)×4%' },
+  // ── PS4 ──
+  'ps4_0': { answer:23.44,   fmt:'dollar',  tolerance:0.3,  label:'Stock A fundamental value ($)',   hint:'r = CAPM, then P = D1/(r−g) where D1 = EPS×(1−b)' },
+  'ps4_1': { answer:19.0,    fmt:'percent', tolerance:0.5,  label:'E[R] for σ=50%, β=2 security (%)', hint:'Use SML (not CML) for individual securities' },
+  'ps4_3': { answer:13.86,   fmt:'percent', tolerance:0.1,  label:'New expected return on equity (%)', hint:'WACC is constant under MM. Solve: WACC = (E/V)Re + (D/V)Rd' },
+  // ── Midterm quant ──
+  'midterm_15': { answer:3275.95, fmt:'dollar',  tolerance:5,    label:'Annual savings required ($)',    hint:'FV annuity = 20,000; solve for PMT at 10%, 5 years' },
+  'midterm_16': { answer:7.49,    fmt:'percent', tolerance:0.3,  label:'Bondholder\'s 1-year return (%)', hint:'Return = (Coupon + P1 − P0) / P0' },
+  'midterm_17': { answer:8.0,     fmt:'percent', tolerance:0.3,  label:'Expected return for each investor (%)', hint:'P0 = D1/(r−g); r = D1/P0 + g' },
+  'midterm_18': { answer:2405,    fmt:'dollar',  tolerance:50,   label:'NPV of Project C ($)',           hint:'NPV = −5000 + PV(1000,1000,3000,5000) at 10%' },
+  'midterm_19': { answer:170000,  fmt:'dollar',  tolerance:500,  label:'Operating cash flow ($)',        hint:'OCF = (Rev − Cash Costs)(1−t) + t×Dep' },
+  // ── Final quant ──
+  'final_20': { answer:-1.45,  fmt:'dollar',  tolerance:0.1,  label:'Project NPV ($M)',              hint:'Build FCF table: (Rev−Cost)(1−t) + t×Dep − ΔNWC + CapEx' },
+  'final_21': { answer:0.35,   fmt:'number',  tolerance:0.02, label:'Correlation ρ between Dell and GM', hint:'Solve: σ²p = wD²σD² + wGM²σGM² + 2wDwGMρσDσGM' },
+  'final_22': { answer:2000,   fmt:'dollar',  tolerance:20,   label:'Total firm value ($)',           hint:'WACC = Rf + βA×MRP; then V = CF/WACC' },
+  'final_23': { answer:5250,   fmt:'dollar',  tolerance:20,   label:'Levered firm value VL ($)',     hint:'VL = VU + PV(Tax Shield); PV(TS) = t×interest%×FCF/(r−g)' },
+  'final_24': { answer:50,     fmt:'dollar',  tolerance:0.5,  label:'Downside breakeven price ($)',  hint:'Downside breakeven = Strike − total premium paid' },
+  'final_25': { answer:0.522,  fmt:'number',  tolerance:0.01, label:'Call option delta',             hint:'Delta = N(d1); compute d1 = [ln(S/K)+(r+σ²/2)T]/(σ√T)' },
+};
+
+function parseAnswer(raw, fmt) {
+  let s = String(raw).trim()
+    .replace(/[$,\s]/g, '')
+    .replace(/B$/i, 'e9').replace(/M$/i, 'e6').replace(/K$/i, 'e3')
+    .replace(/%$/, '');
+  const n = parseFloat(s);
+  if (isNaN(n)) return NaN;
+  if (fmt === 'percent' && Math.abs(n) > 1.5) return n / 100; // user typed 8 meaning 8%
+  return n;
+}
+
+function checkAnswerCorrect(entered, correct, fmt, tolerance) {
+  const e = parseAnswer(entered, fmt);
+  if (isNaN(e)) return false;
+  let c = correct;
+  if (fmt === 'percent' && Math.abs(c) > 1.5) c = c / 100;
+  if (fmt === 'percent') return Math.abs(e - c) <= (tolerance / 100);
+  if (Math.abs(c) < 0.001) return Math.abs(e - c) < 0.001;
+  return Math.abs(e - c) / Math.abs(c) <= tolerance;
+}
+
+// ============================================================
 // ASSIGNMENT PLAYER
 // ============================================================
 let asgnState = {
@@ -1622,6 +1699,7 @@ let asgnState = {
   currentQ: 0,
   xpEarned: 0,
   answered: false,
+  attempts: 0,
 };
 
 function showAssignments() {
@@ -1655,6 +1733,7 @@ function renderAsgnQuestion() {
   const a = asgnState.assignment;
   const q = a.questions[asgnState.currentQ];
   asgnState.answered = false;
+  asgnState.attempts = 0;
 
   const pct = (asgnState.currentQ / a.questions.length * 100).toFixed(0);
   document.getElementById('asgn-progress').style.width = pct + '%';
@@ -1671,25 +1750,44 @@ function renderAsgnQuestion() {
         <div style="font-size:.82rem;color:#6ee7b7;font-family:monospace;white-space:pre-wrap;line-height:1.7">${excelTip}</div>
        </div>` : '';
 
+  const ansKey = `${asgnState.assignment.id}_${asgnState.currentQ}`;
+  const ans = ASSIGNMENT_ANSWERS[ansKey];
+
   if (q.type === 'work') {
+    const ansInput = ans ? `
+      <div class="ans-input-wrap">
+        <div class="ans-input-label">✏️ ENTER YOUR ANSWER — ${ans.label}</div>
+        <div class="ans-row">
+          <input class="ans-field" id="asgn-ans-field" placeholder="type your answer…"
+            onkeydown="if(event.key==='Enter')checkAsgnAnswer()"/>
+          <button class="ans-check-btn" onclick="checkAsgnAnswer()">Check ⚡</button>
+        </div>
+        <div class="ans-feedback" id="asgn-feedback"></div>
+        <div class="ans-attempts" id="asgn-attempts"></div>
+        <button class="ans-skip" onclick="revealAsgnSolution()">Skip — just show me the solution</button>
+      </div>` : `
+      <div class="work-actions">
+        <button class="reveal-btn" onclick="revealAsgnSolution()">👁 Reveal Solution</button>
+      </div>`;
+
     area.innerHTML = `
       <div class="work-card">
         <div class="work-label">${q.label}</div>
         <div class="work-title">${q.title}</div>
         <div class="work-problem">${q.problem}</div>
-        <div class="work-actions">
-          <button class="reveal-btn" onclick="revealAsgnSolution()">👁 Reveal Solution</button>
-        </div>
+        ${ansInput}
         <div class="solution-area" id="asgn-solution">
           <div class="solution-box" id="asgn-solution-text"></div>
           ${excelBox}
           ${q.concept ? `<div class="concept-note"><div class="concept-note-label">🧠 CORE CONCEPT</div>${q.concept}</div>` : ''}
-          <div class="self-rate">
+          <div class="self-rate" id="asgn-self-rate" style="${ans ? 'display:none' : ''}">
             <button class="rate-btn rate-got" onclick="rateAsgn(true)">✅ Got it! (+100 XP)</button>
             <button class="rate-btn rate-miss" onclick="rateAsgn(false)">❌ Need review (+25 XP)</button>
           </div>
+          <button class="next-btn" id="asgn-next-btn" onclick="nextAsgnQuestion()" style="display:none;margin-top:8px">NEXT →</button>
         </div>
       </div>`;
+    if (ans) setTimeout(() => document.getElementById('asgn-ans-field')?.focus(), 100);
   } else {
     const labels = ['A','B','C','D'];
     area.innerHTML = `
@@ -1713,11 +1811,85 @@ function renderAsgnQuestion() {
   }
 }
 
+function checkAsgnAnswer() {
+  if (asgnState.answered) return;
+  const field = document.getElementById('asgn-ans-field');
+  if (!field) return;
+  const raw = field.value.trim();
+  if (!raw) { field.style.borderColor = 'var(--red)'; return; }
+
+  const ansKey = `${asgnState.assignment.id}_${asgnState.currentQ}`;
+  const ans = ASSIGNMENT_ANSWERS[ansKey];
+  if (!ans) return;
+
+  asgnState.attempts++;
+  const correct = checkAnswerCorrect(raw, ans.answer, ans.fmt, ans.tolerance);
+  const fb = document.getElementById('asgn-feedback');
+  const attEl = document.getElementById('asgn-attempts');
+
+  if (correct) {
+    const xp = asgnState.attempts === 1 ? 150 : asgnState.attempts === 2 ? 100 : 75;
+    fb.className = 'ans-feedback correct';
+    fb.style.display = 'flex';
+    fb.innerHTML = `✅ Correct! +${xp} XP${asgnState.attempts > 1 ? ` (attempt ${asgnState.attempts})` : ' 🔥'}`;
+    field.style.borderColor = 'var(--green)';
+    field.disabled = true;
+    asgnState.answered = true;
+    asgnState.xpEarned += xp;
+    state.totalXP += xp;
+    updateHUD(); saveState();
+    playCorrect(); flash('green'); spawnXP(xp);
+    revealAsgnSolutionInner();
+    const nextBtn = document.getElementById('asgn-next-btn');
+    if (nextBtn) nextBtn.style.display = 'block';
+  } else {
+    fb.className = 'ans-feedback wrong';
+    fb.style.display = 'flex';
+    const hint = asgnState.attempts >= 2 && ans.hint ? ` Hint: ${ans.hint}` : '';
+    fb.innerHTML = `❌ Not quite — try again.${hint}`;
+    field.style.borderColor = 'var(--red)';
+    attEl.textContent = `Attempt ${asgnState.attempts} of 3`;
+    playWrong();
+    if (asgnState.attempts >= 3) {
+      fb.innerHTML = `❌ Answer: see solution below. Hint: ${ans.hint || ''}`;
+      revealAsgnSolutionInner();
+      const xp = 25;
+      asgnState.answered = true;
+      asgnState.xpEarned += xp;
+      state.totalXP += xp;
+      updateHUD(); saveState();
+      const nextBtn = document.getElementById('asgn-next-btn');
+      if (nextBtn) nextBtn.style.display = 'block';
+    }
+  }
+}
+
+function revealAsgnSolutionInner() {
+  const q = asgnState.assignment.questions[asgnState.currentQ];
+  const sol = document.getElementById('asgn-solution');
+  const solText = document.getElementById('asgn-solution-text');
+  if (sol) sol.classList.add('open');
+  if (solText) solText.innerHTML = q.solution;
+}
+
 function revealAsgnSolution() {
   if (asgnState.answered) return;
-  const q = asgnState.assignment.questions[asgnState.currentQ];
-  document.getElementById('asgn-solution').classList.add('open');
-  document.getElementById('asgn-solution-text').innerHTML = q.solution;
+  asgnState.answered = true;
+  revealAsgnSolutionInner();
+  const ansKey = `${asgnState.assignment.id}_${asgnState.currentQ}`;
+  const hasAns = !!ASSIGNMENT_ANSWERS[ansKey];
+  const xp = hasAns ? 25 : 100; // penalty for skipping a graded question
+  asgnState.xpEarned += xp;
+  state.totalXP += xp;
+  updateHUD(); saveState();
+  // show self-rate for non-graded, next button for graded
+  const selfRate = document.getElementById('asgn-self-rate');
+  const nextBtn = document.getElementById('asgn-next-btn');
+  if (hasAns) {
+    if (nextBtn) nextBtn.style.display = 'block';
+  } else {
+    if (selfRate) selfRate.style.display = 'flex';
+  }
 }
 
 function rateAsgn(gotIt) {
