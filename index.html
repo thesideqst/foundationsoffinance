@@ -1635,39 +1635,109 @@ const EXCEL_TIPS = {
 // tolerance: allowed % error (0.02 = ±2%) | for percent: in pct points
 // label: what to ask for | hint: shown after first wrong attempt
 // ============================================================
+// parts[] = multi-part question; single answer = one-box questions
 const ASSIGNMENT_ANSWERS = {
   // ── PS1 ──
-  'ps1_0': { answer:0.90,    fmt:'dollar',  tolerance:0.02, label:'Your profit ($)',               hint:'You buy at the ask price, sell at the bid price.' },
-  'ps1_1': { answer:66.51,   fmt:'dollar',  tolerance:0.5,  label:'7-year zero-coupon bond price ($)', hint:'Price = Face / (1 + YTM)^N' },
-  'ps1_2': { answer:4.90,    fmt:'percent', tolerance:0.5,  label:'Bond\'s implied YTM (%)',       hint:'YTM = (Face/Price)^(1/N) − 1, then convert to %' },
-  'ps1_3': { answer:98700,   fmt:'dollar',  tolerance:200,  label:'Perpetuity PV at r=6% ($)',     hint:'PV = C/r, then discount back (n−1) periods' },
-  'ps1_4': { answer:744000,  fmt:'dollar',  tolerance:2000, label:'Warehouse value with 2.5% growth ($)', hint:'GGM: PV = Net Rent / (r − g)' },
+  'ps1_0': { parts:[
+    {answer:0.10,  fmt:'dollar',  tolerance:0.01, label:'(a) Bid-ask spread ($)',       hint:'Spread = Ask − Bid'},
+    {answer:1.00,  fmt:'dollar',  tolerance:0.02, label:'(b) Midpoint price rise ($)',  hint:'New midpoint − Old midpoint'},
+    {answer:0.90,  fmt:'dollar',  tolerance:0.02, label:'(c) Your profit ($)',          hint:'You buy at ask, sell at bid'},
+    {answer:-0.90, fmt:'dollar',  tolerance:0.02, label:'(d) Market maker profit ($)',  hint:'Opposite of your trades'},
+  ]},
+  'ps1_1': { parts:[
+    {answer:66.51, fmt:'dollar',  tolerance:0.5,  label:'(a) 7-year zero price ($)',    hint:'Price = 100/(1.06)^7'},
+    {answer:9,     fmt:'number',  tolerance:0.1,  label:'(b) Maturity of $59.19 bond (years)', hint:'NPER(6%,0,−59.19,100)'},
+  ]},
+  'ps1_2': { answer:4.90,    fmt:'percent', tolerance:0.3,  label:'Implied YTM of the bond (%)', hint:'YTM = (100/65)^(1/9) − 1, multiply by 100' },
+  'ps1_3': { parts:[
+    {answer:55824, fmt:'dollar',  tolerance:300,  label:'(a) Annuity PV at 6% ($)',     hint:'PV = C×[1−1/(1+r)^n]/r'},
+    {answer:98700, fmt:'dollar',  tolerance:300,  label:'(a) OR Perpetuity PV at 6% ($)', hint:'PV at t=9: C/r; then discount back 9 periods'},
+  ]},
+  'ps1_4': { parts:[
+    {answer:558000, fmt:'dollar', tolerance:2000, label:'(a) Value, no growth ($)',      hint:'V = 55,800/0.10'},
+    {answer:744000, fmt:'dollar', tolerance:2000, label:'(b) Value with 2.5% growth ($)', hint:'V = 55,800/(0.10−0.025)'},
+    {answer:841768, fmt:'dollar', tolerance:3000, label:'(c) Sale price at year 5 ($)',  hint:'V5 = V0×(1.025)^5'},
+    {answer:656471, fmt:'dollar', tolerance:3000, label:'(f) Value with 1% property tax ($)', hint:'Add tax rate to discount rate: 55800/(0.11−0.025)'},
+  ]},
   // ── PS2 ──
-  'ps2_0': { answer:115.54,  fmt:'dollar',  tolerance:0.2,  label:'Amount owed at end of year 2 ($M)', hint:'Refinance: Year 1 repayment × (1 + new rate)' },
-  'ps2_1': { answer:113.83,  fmt:'dollar',  tolerance:3,    label:'Nvidia intrinsic value today ($)',   hint:'Sum PV of 5 dividends + PV of terminal value' },
-  'ps2_2': { answer:7.76,    fmt:'percent', tolerance:0.3,  label:'Apple\'s implied growth rate (%)',   hint:'g = r − (Dividends + Buybacks) / Market Cap' },
-  'ps2_3': { answer:0.86,    fmt:'dollar',  tolerance:0.3,  label:'CoreWeave project NPV ($M)',          hint:'NPV = C0 + NPV(12%, Year1:Year12 cash flows)' },
-  'ps2_4': { answer:-0.41,   fmt:'dollar',  tolerance:0.1,  label:'Vail ski pass NPV ($M)',              hint:'Semi-annual rate = (1.10)^0.5 − 1 = 4.879%' },
+  'ps2_0': { parts:[
+    {answer:115.54, fmt:'dollar', tolerance:0.2,  label:'(a) Amount owed at end yr2 ($M)', hint:'$100M×1.06 = $106M; then ×1.09'},
+    {answer:7.49,   fmt:'percent',tolerance:0.3,  label:'(b) Annualized financing rate (%)', hint:'√(1.06×1.09) − 1'},
+    {answer:-0.54,  fmt:'dollar', tolerance:0.1,  label:'(c) Profit/loss with 1-yr bonds ($M)', hint:'Project pays $115M, you owe $115.54M'},
+    {answer:0.51,   fmt:'dollar', tolerance:0.1,  label:'(d) Profit if 2-yr bonds ($M)', hint:'Owe: $100M×1.07² = $114.49M'},
+  ]},
+  'ps2_1': { answer:113.83, fmt:'dollar',  tolerance:3,    label:'Nvidia intrinsic value today ($)',   hint:'PV of 5 dividends + PV(terminal value at t=5)' },
+  'ps2_2': { parts:[
+    {answer:38,    fmt:'number',  tolerance:0.2,  label:'(a) Apple P/E ratio',           hint:'Market Cap / Earnings'},
+    {answer:7.76,  fmt:'percent', tolerance:0.3,  label:'(c) Apple implied growth rate (%)', hint:'g = r − (Divs+Buybacks)/Market Cap'},
+    {answer:51.7,  fmt:'percent', tolerance:1.0,  label:'(d) Apple implied ROE (%)',     hint:'ROE = g / plowback'},
+  ]},
+  'ps2_3': { parts:[
+    {answer:0.86,  fmt:'dollar',  tolerance:0.3,  label:'(b) CoreWeave NPV ($M)',        hint:'=−20 + NPV(12%, all cash flows)'},
+  ]},
+  'ps2_4': { parts:[
+    {answer:-0.41, fmt:'dollar',  tolerance:0.1,  label:'(b) Vail ski pass NPV ($M)',    hint:'Semi-annual rate = (1.10)^0.5 − 1'},
+    {answer:8.68,  fmt:'percent', tolerance:0.3,  label:'(a) Semi-annual IRR (%)',       hint:'Solve: 6 = 1/(1+r) + 6/(1+r)²; quadratic formula'},
+  ]},
   // ── PS3 ──
-  'ps3_1': { answer:20.0,    fmt:'percent', tolerance:0.5,  label:'75%A/25%B portfolio σ (%)',       hint:'σ²p = wA²σA² + wB²σB² + 2wAwBρσAσB, then √' },
-  'ps3_2': { answer:13.0,    fmt:'percent', tolerance:0.5,  label:'150% S&P 500 portfolio E[R] (%)', hint:'E[Rp] = 1.5×10% + (−0.5)×4%' },
+  'ps3_1': { parts:[
+    {answer:20.0,  fmt:'percent', tolerance:0.5,  label:'(ii) 75/25 portfolio σ (%)',   hint:'σ²p = 0.75²×0.04 + 0.25²×0.16 + 2×0.75×0.25×0.25×0.20×0.40'},
+    {answer:24.5,  fmt:'percent', tolerance:0.5,  label:'(iii) 50/50 portfolio σ (%)',  hint:'Same formula with wA=wB=0.5'},
+    {answer:31.6,  fmt:'percent', tolerance:0.5,  label:'(iv) 25/75 portfolio σ (%)',   hint:'Same formula with wA=0.25, wB=0.75'},
+  ]},
+  'ps3_2': { parts:[
+    {answer:7.0,   fmt:'percent', tolerance:0.3,  label:'(b) E[R] for 50% S&P + 50% Rf (%)', hint:'E[Rp] = 0.5×10% + 0.5×4%'},
+    {answer:13.0,  fmt:'percent', tolerance:0.3,  label:'(c) E[R] for 150% S&P, −50% Rf (%)', hint:'E[Rp] = 1.5×10% − 0.5×4%'},
+    {answer:16.0,  fmt:'percent', tolerance:0.3,  label:'(d) E[R] for 2× std dev portfolio (%)', hint:'wM = 36%/18% = 2; E[R] = 2×10% − 1×4%'},
+  ]},
   // ── PS4 ──
-  'ps4_0': { answer:23.44,   fmt:'dollar',  tolerance:0.3,  label:'Stock A fundamental value ($)',   hint:'r = CAPM, then P = D1/(r−g) where D1 = EPS×(1−b)' },
-  'ps4_1': { answer:19.0,    fmt:'percent', tolerance:0.5,  label:'E[R] for σ=50%, β=2 security (%)', hint:'Use SML (not CML) for individual securities' },
-  'ps4_3': { answer:13.86,   fmt:'percent', tolerance:0.1,  label:'New expected return on equity (%)', hint:'WACC is constant under MM. Solve: WACC = (E/V)Re + (D/V)Rd' },
+  'ps4_0': { parts:[
+    {answer:7.0,   fmt:'percent', tolerance:0.3,  label:'(a) Market risk premium (%)',   hint:'MRP = E[Rm] − Rf = 10% − 3%'},
+    {answer:0.70,  fmt:'number',  tolerance:0.02, label:'(b) Market Sharpe ratio',       hint:'Sharpe = MRP / σm = 7%/10%'},
+    {answer:11.4,  fmt:'percent', tolerance:0.3,  label:'(c) Stock A expected return (%)', hint:'E[R] = 3% + 1.2×7%'},
+    {answer:23.44, fmt:'dollar',  tolerance:0.3,  label:'(d) Stock A fundamental value ($)', hint:'D1 = EPS×(1−b) = $1.50; P = D1/(r−g)'},
+  ]},
+  'ps4_1': { parts:[
+    {answer:19.0,  fmt:'percent', tolerance:0.3,  label:'(a) E[R] for β=2 security (%)',    hint:'Use SML: E[R] = 5% + 2×(12%−5%)'},
+    {answer:10.83, fmt:'percent', tolerance:0.3,  label:'(b) E[R] for σ=10% efficient portfolio (%)', hint:'Use CML: E[R] = 5% + (7%/12%)×10%'},
+    {answer:0.833, fmt:'number',  tolerance:0.02, label:'(c) Beta of efficient portfolio',  hint:'β = σp/σm = 10%/12%'},
+  ]},
+  'ps4_3': { parts:[
+    {answer:11.8,  fmt:'percent', tolerance:0.2,  label:'Current WACC (%)',               hint:'WACC = (600/1000)×15% + (400/1000)×7%'},
+    {answer:13.86, fmt:'percent', tolerance:0.1,  label:'New cost of equity after recap (%)', hint:'New E=$700M, D=$300M; solve WACC = (E/V)Re + (D/V)Rd'},
+  ]},
   // ── Midterm quant ──
-  'midterm_15': { answer:3275.95, fmt:'dollar',  tolerance:5,    label:'Annual savings required ($)',    hint:'FV annuity = 20,000; solve for PMT at 10%, 5 years' },
-  'midterm_16': { answer:7.49,    fmt:'percent', tolerance:0.3,  label:'Bondholder\'s 1-year return (%)', hint:'Return = (Coupon + P1 − P0) / P0' },
-  'midterm_17': { answer:8.0,     fmt:'percent', tolerance:0.3,  label:'Expected return for each investor (%)', hint:'P0 = D1/(r−g); r = D1/P0 + g' },
-  'midterm_18': { answer:2405,    fmt:'dollar',  tolerance:50,   label:'NPV of Project C ($)',           hint:'NPV = −5000 + PV(1000,1000,3000,5000) at 10%' },
-  'midterm_19': { answer:170000,  fmt:'dollar',  tolerance:500,  label:'Operating cash flow ($)',        hint:'OCF = (Rev − Cash Costs)(1−t) + t×Dep' },
+  'midterm_15': { answer:3275.95, fmt:'dollar',  tolerance:5,    label:'Annual savings required ($)',         hint:'PMT(10%, 5, 0, −20000) or solve FV annuity = 20,000' },
+  'midterm_16': { answer:7.49,    fmt:'percent', tolerance:0.3,  label:'1-year holding period return (%)',    hint:'Return = (Coupon + P1 − P0) / P0' },
+  'midterm_17': { answer:8.0,     fmt:'percent', tolerance:0.3,  label:'Expected return for both investors (%)', hint:'P0 = D1/(r−g) = $333.33; r1 = (10+350−333)/333' },
+  'midterm_18': { parts:[
+    {answer:3,     fmt:'number',  tolerance:0.1,  label:'(a) Project A payback period (years)', hint:'Cumulate: $1k, $2k, $5k — crosses $5k at year 3'},
+    {answer:2,     fmt:'number',  tolerance:0.1,  label:'(a) Project B payback period (years)', hint:'Cumulate: $0, $1k, $3k — crosses $1k at year 2'},
+    {answer:3,     fmt:'number',  tolerance:0.1,  label:'(a) Project C payback period (years)', hint:'Same as A for years 1−3'},
+    {answer:2405,  fmt:'dollar',  tolerance:50,   label:'(c) NPV of Project C ($)',             hint:'=−5000 + NPV(10%, {1000,1000,3000,5000})'},
+  ]},
+  'midterm_19': { answer:170000,  fmt:'dollar',  tolerance:500,  label:'Operating cash flow ($)',             hint:'OCF = (Rev − Cash Costs)(1−t) + t×Dep = $170,000' },
   // ── Final quant ──
-  'final_20': { answer:-1.45,  fmt:'dollar',  tolerance:0.1,  label:'Project NPV ($M)',              hint:'Build FCF table: (Rev−Cost)(1−t) + t×Dep − ΔNWC + CapEx' },
-  'final_21': { answer:0.35,   fmt:'number',  tolerance:0.02, label:'Correlation ρ between Dell and GM', hint:'Solve: σ²p = wD²σD² + wGM²σGM² + 2wDwGMρσDσGM' },
-  'final_22': { answer:2000,   fmt:'dollar',  tolerance:20,   label:'Total firm value ($)',           hint:'WACC = Rf + βA×MRP; then V = CF/WACC' },
-  'final_23': { answer:5250,   fmt:'dollar',  tolerance:20,   label:'Levered firm value VL ($)',     hint:'VL = VU + PV(Tax Shield); PV(TS) = t×interest%×FCF/(r−g)' },
-  'final_24': { answer:50,     fmt:'dollar',  tolerance:0.5,  label:'Downside breakeven price ($)',  hint:'Downside breakeven = Strike − total premium paid' },
-  'final_25': { answer:0.522,  fmt:'number',  tolerance:0.01, label:'Call option delta',             hint:'Delta = N(d1); compute d1 = [ln(S/K)+(r+σ²/2)T]/(σ√T)' },
+  'final_20': { parts:[
+    {answer:1.9,   fmt:'dollar',  tolerance:0.1,  label:'Year 1 FCF ($M)',               hint:'FCF = (3−0)(1−0.20) + 0.20×2.5 − 1 NWC'},
+    {answer:-1.45, fmt:'dollar',  tolerance:0.1,  label:'Project NPV ($M)',              hint:'=−10 + NPV(12%, {1.9, 2.9, 2.9, 3.9})'},
+  ]},
+  'final_21': { answer:0.35,   fmt:'number',  tolerance:0.02, label:'Correlation ρ (Dell & GM)',            hint:'Rearrange: ρ = (σp²−wD²σD²−wGM²σGM²)/(2wDwGMσDσGM)' },
+  'final_22': { parts:[
+    {answer:5.0,   fmt:'percent', tolerance:0.2,  label:'(a) WACC (%)',                  hint:'WACC = Rf + βA×MRP = 2% + 0.5×6%'},
+    {answer:2000,  fmt:'dollar',  tolerance:20,   label:'(b) Total firm value ($)',       hint:'V = CF/WACC = 100/0.05'},
+    {answer:1000,  fmt:'dollar',  tolerance:20,   label:'(c) Equity after $1000 debt ($)', hint:'MM: V stays $2000; E = V − D'},
+  ]},
+  'final_23': { parts:[
+    {answer:5000,  fmt:'dollar',  tolerance:20,   label:'(a) Current (unlevered) value ($)', hint:'r = 2%+0.8×5%=6%; V = 200/(0.06−0.02)'},
+    {answer:5250,  fmt:'dollar',  tolerance:20,   label:'(b) Levered firm value ($)',     hint:'VL = VU + PV(TS); PV(TS) = 0.25×0.20×200/0.04'},
+    {answer:5.0,   fmt:'percent', tolerance:0.2,  label:'(c) % stock price increase (%)', hint:'= PV(TS)/VU = 250/5000'},
+  ]},
+  'final_24': { parts:[
+    {answer:70,    fmt:'dollar',  tolerance:0.5,  label:'(a) Upside breakeven ($)',       hint:'= Strike + total premium = 60+10'},
+    {answer:50,    fmt:'dollar',  tolerance:0.5,  label:'(a) Downside breakeven ($)',     hint:'= Strike − total premium = 60−10'},
+  ]},
+  'final_25': { answer:0.522,  fmt:'number',  tolerance:0.01, label:'Call option delta N(d₁)',              hint:'d1=(ln(49/50)+(5%+2%)×0.3846)/(20%×√0.3846); then NORM.S.DIST(d1,TRUE)' },
 };
 
 function parseAnswer(raw, fmt) {
@@ -1752,17 +1822,24 @@ function renderAsgnQuestion() {
 
   const ansKey = `${asgnState.assignment.id}_${asgnState.currentQ}`;
   const ans = ASSIGNMENT_ANSWERS[ansKey];
+  const parts = ans ? (ans.parts || [{answer:ans.answer, fmt:ans.fmt, tolerance:ans.tolerance, label:ans.label, hint:ans.hint}]) : null;
 
   if (q.type === 'work') {
-    const ansInput = ans ? `
+    const ansInput = parts ? `
       <div class="ans-input-wrap">
-        <div class="ans-input-label">✏️ ENTER YOUR ANSWER — ${ans.label}</div>
-        <div class="ans-row">
-          <input class="ans-field" id="asgn-ans-field" placeholder="type your answer…"
-            onkeydown="if(event.key==='Enter')checkAsgnAnswer()"/>
-          <button class="ans-check-btn" onclick="checkAsgnAnswer()">Check ⚡</button>
+        <div class="ans-input-label">✏️ ENTER YOUR ANSWERS</div>
+        ${parts.map((p, i) => `
+          <div style="margin-bottom:10px">
+            <div style="font-size:.72rem;color:var(--text2);margin-bottom:4px;font-weight:600">${p.label}</div>
+            <div class="ans-row">
+              <input class="ans-field" id="asgn-ans-${i}" placeholder="type your answer…"
+                onkeydown="if(event.key==='Enter')checkAsgnAnswer()"/>
+            </div>
+            <div class="ans-feedback" id="asgn-feedback-${i}"></div>
+          </div>`).join('')}
+        <div class="ans-row" style="margin-top:4px">
+          <button class="ans-check-btn" style="flex:1" onclick="checkAsgnAnswer()">Check All ⚡</button>
         </div>
-        <div class="ans-feedback" id="asgn-feedback"></div>
         <div class="ans-attempts" id="asgn-attempts"></div>
         <button class="ans-skip" onclick="revealAsgnSolution()">Skip — just show me the solution</button>
       </div>` : `
@@ -1813,54 +1890,75 @@ function renderAsgnQuestion() {
 
 function checkAsgnAnswer() {
   if (asgnState.answered) return;
-  const field = document.getElementById('asgn-ans-field');
-  if (!field) return;
-  const raw = field.value.trim();
-  if (!raw) { field.style.borderColor = 'var(--red)'; return; }
-
   const ansKey = `${asgnState.assignment.id}_${asgnState.currentQ}`;
   const ans = ASSIGNMENT_ANSWERS[ansKey];
   if (!ans) return;
+  const parts = ans.parts || [{answer:ans.answer, fmt:ans.fmt, tolerance:ans.tolerance, label:ans.label, hint:ans.hint}];
 
   asgnState.attempts++;
-  const correct = checkAnswerCorrect(raw, ans.answer, ans.fmt, ans.tolerance);
-  const fb = document.getElementById('asgn-feedback');
-  const attEl = document.getElementById('asgn-attempts');
+  let numCorrect = 0;
 
-  if (correct) {
+  parts.forEach((p, i) => {
+    const field = document.getElementById(`asgn-ans-${i}`);
+    const fb = document.getElementById(`asgn-feedback-${i}`);
+    if (!field || !fb) return;
+    const raw = field.value.trim();
+    if (!raw) { field.style.borderColor = 'var(--red)'; return; }
+    const correct = checkAnswerCorrect(raw, p.answer, p.fmt, p.tolerance);
+    if (correct) {
+      numCorrect++;
+      fb.className = 'ans-feedback correct';
+      fb.style.display = 'flex';
+      fb.innerHTML = `✅ Correct!`;
+      field.style.borderColor = 'var(--green)';
+      field.disabled = true;
+    } else {
+      fb.className = 'ans-feedback wrong';
+      fb.style.display = 'flex';
+      const hint = asgnState.attempts >= 2 && p.hint ? ` Hint: ${p.hint}` : '';
+      fb.innerHTML = `❌ Not quite.${hint}`;
+      field.style.borderColor = 'var(--red)';
+    }
+  });
+
+  const attEl = document.getElementById('asgn-attempts');
+  const allCorrect = numCorrect === parts.length;
+
+  if (allCorrect) {
     const xp = asgnState.attempts === 1 ? 150 : asgnState.attempts === 2 ? 100 : 75;
-    fb.className = 'ans-feedback correct';
-    fb.style.display = 'flex';
-    fb.innerHTML = `✅ Correct! +${xp} XP${asgnState.attempts > 1 ? ` (attempt ${asgnState.attempts})` : ' 🔥'}`;
-    field.style.borderColor = 'var(--green)';
-    field.disabled = true;
     asgnState.answered = true;
     asgnState.xpEarned += xp;
     state.totalXP += xp;
     updateHUD(); saveState();
     playCorrect(); flash('green'); spawnXP(xp);
+    if (attEl) attEl.textContent = `🎯 All correct! +${xp} XP`;
     revealAsgnSolutionInner();
-    const nextBtn = document.getElementById('asgn-next-btn');
-    if (nextBtn) nextBtn.style.display = 'block';
-  } else {
-    fb.className = 'ans-feedback wrong';
-    fb.style.display = 'flex';
-    const hint = asgnState.attempts >= 2 && ans.hint ? ` Hint: ${ans.hint}` : '';
-    fb.innerHTML = `❌ Not quite — try again.${hint}`;
-    field.style.borderColor = 'var(--red)';
-    attEl.textContent = `Attempt ${asgnState.attempts} of 3`;
+    const nb = document.getElementById('asgn-next-btn');
+    if (nb) nb.style.display = 'block';
+  } else if (asgnState.attempts >= 3) {
+    // give partial credit and reveal
+    const xp = Math.round(25 + (numCorrect / parts.length) * 50);
+    asgnState.answered = true;
+    asgnState.xpEarned += xp;
+    state.totalXP += xp;
+    updateHUD(); saveState();
     playWrong();
-    if (asgnState.attempts >= 3) {
-      fb.innerHTML = `❌ Answer: see solution below. Hint: ${ans.hint || ''}`;
-      revealAsgnSolutionInner();
-      const xp = 25;
-      asgnState.answered = true;
-      asgnState.xpEarned += xp;
-      state.totalXP += xp;
-      updateHUD(); saveState();
-      const nextBtn = document.getElementById('asgn-next-btn');
-      if (nextBtn) nextBtn.style.display = 'block';
-    }
+    if (attEl) attEl.textContent = `${numCorrect}/${parts.length} correct — solution revealed (+${xp} XP)`;
+    // mark remaining wrong answers
+    parts.forEach((p, i) => {
+      const field = document.getElementById(`asgn-ans-${i}`);
+      const fb = document.getElementById(`asgn-feedback-${i}`);
+      if (field && !field.disabled) {
+        if (fb) { fb.className='ans-feedback wrong'; fb.style.display='flex'; fb.innerHTML=`❌ Answer: ${p.answer}${p.fmt==='percent'?'%':p.fmt==='dollar'?'$':''}`; }
+        field.disabled = true;
+      }
+    });
+    revealAsgnSolutionInner();
+    const nb = document.getElementById('asgn-next-btn');
+    if (nb) nb.style.display = 'block';
+  } else {
+    playWrong();
+    if (attEl) attEl.textContent = `${numCorrect}/${parts.length} correct — attempt ${asgnState.attempts} of 3`;
   }
 }
 
