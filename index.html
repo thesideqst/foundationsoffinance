@@ -1582,6 +1582,107 @@ const ASSIGNMENTS = [
     solution:'T = 20/52 = 0.3846 years\n\nd₁ = [ln(S/K) + (r + σ²/2)×T] / (σ×√T)\n   = [ln(49/50) + (0.05 + 0.02)×0.3846] / (0.20×√0.3846)\n   = [−0.02020 + 0.02692] / (0.20×0.6202)\n   = 0.00672 / 0.12403\n   = 0.0542\n\nDelta = N(d₁) = N(0.0542) ≈ <strong>0.522</strong>',
     concept:'Delta = N(d₁) = the hedge ratio. N(0.054) ≈ 0.522 means you need 0.522 shares per call to hedge. Slightly above 0.5 because even though S < K (out-of-the-money), the positive drift term (r + σ²/2)×T shifts d₁ above 0. At-the-money options have delta ≈ 0.5.'},
   ]},
+
+{id:'final2',name:'Practice Final 2 — WACC & Capital Structure Focus',icon:'🎯',color:'#7c3aed',due:'FINAL Jun 27 @ 1pm',
+  desc:'15 MC + 4 quant · Heavily weighted toward WACC, beta, capital structure, FCF, portfolio theory · All numbers given · Different variable combinations than Practice Final 1',
+  questions:[
+  // ── 15 MULTIPLE CHOICE ────────────────────────────────
+  {type:'mc_asgn',label:'MC 1',title:'Incremental Cash Flows — Sunk Cost',
+    q:'EcoEnergy spent $800,000 on a feasibility study last year for a new wind farm. The study is now complete. In evaluating whether to build the wind farm, the $800,000 should be:',
+    opts:['Included — it directly caused the wind farm decision','Excluded — it is a sunk cost, spent regardless of the decision','Included — it represents the true cost of the project','Excluded only if the project has positive NPV'],ans:1,
+    solution:'Sunk costs are irrelevant to capital budgeting decisions. The $800,000 is already spent and cannot be recovered whether or not the wind farm is built. Only FUTURE incremental cash flows matter for NPV. Answer: <strong>(b) Excluded — sunk cost</strong>'},
+
+  {type:'mc_asgn',label:'MC 2',title:'NWC Effect on FCF',
+    q:'A project causes inventory to rise by $400,000 and accounts payable to rise by $150,000. Accounts receivable are unchanged. What is the effect on FCF in the year this occurs?',
+    opts:['+$250,000','+$550,000','−$250,000','−$550,000'],ans:2,
+    solution:'ΔNWC = Δ(Current Assets) − Δ(Current Liabilities) = $400,000 − $150,000 = +$250,000 increase in NWC. An increase in NWC is a cash OUTFLOW, so FCF decreases by $250,000. Answer: <strong>(c) −$250,000</strong>'},
+
+  {type:'mc_asgn',label:'MC 3',title:'MM No-Tax: Capital Structure Change',
+    q:'Under Modigliani-Miller (no taxes, no frictions), if a firm moves from 0% debt to 40% debt:',
+    opts:['WACC falls — debt is cheaper than equity','WACC rises — more financial risk','WACC stays constant — firm value is unchanged','Firm value rises by the amount of the tax shield'],ans:2,
+    solution:'Under MM with no taxes, capital structure is irrelevant. Firm value and WACC are both unchanged — the cost of equity rises to exactly offset the benefit of cheaper debt. With taxes, (d) would be correct. Answer: <strong>(c) WACC stays constant</strong>'},
+
+  {type:'mc_asgn',label:'MC 4',title:'Equity Beta and Leverage',
+    q:'A firm\'s asset beta (βA) is 0.9 and its tax rate is 25%. If the firm increases its D/E ratio from 0 to 0.8, its equity beta will:',
+    opts:['Decrease below 0.9','Stay at 0.9','Increase above 0.9','Become negative'],ans:2,
+    solution:'Hamada equation: βE = βA×[1+(1−T)(D/E)] = 0.9×[1+0.75×0.8] = 0.9×1.6 = 1.44 > 0.9. Leverage always increases equity beta because equity holders bear more risk when there\'s debt. Answer: <strong>(c) Increase above 0.9</strong>'},
+
+  {type:'mc_asgn',label:'MC 5',title:'Unlevering — What It Achieves',
+    q:'You unlever three streaming companies\' equity betas to get asset betas. The purpose is to:',
+    opts:['Adjust for differences in their earnings growth rates','Remove the effect of each firm\'s capital structure to isolate pure business risk','Adjust for differences in their size and market cap','Convert from levered to unlevered firm value'],ans:1,
+    solution:'The pure-play approach: comparables almost certainly have different capital structures than your target firm. Unlevering strips each firm\'s leverage effect, leaving only their asset (business) risk. You then relever to your target structure. Answer: <strong>(b) Remove capital structure effects to isolate business risk</strong>'},
+
+  {type:'mc_asgn',label:'MC 6',title:'WACC as Discount Rate — When Valid',
+    q:'WACC is the appropriate discount rate for a project when:',
+    opts:['The project is financed 100% with equity','The project has the same risk and leverage as the overall firm','The firm\'s capital structure will change dramatically over the project life','The firm has investment-grade debt'],ans:1,
+    solution:'WACC reflects the firm\'s CURRENT capital structure and risk. It\'s appropriate when the project has the same business risk as the firm (so the same asset beta) AND the firm maintains its target capital structure. If capital structure changes significantly, use APV instead. Answer: <strong>(b) Same risk and leverage as the overall firm</strong>'},
+
+  {type:'mc_asgn',label:'MC 7',title:'What Increases VL vs VU (MM with taxes)',
+    q:'Under MM with corporate taxes, which of the following increases a firm\'s levered value (VL) above its unlevered value (VU)?',
+    opts:['Bankruptcy costs','Agency costs between shareholders and debtholders','Interest tax shield','Financial distress costs'],ans:2,
+    solution:'VL = VU + PV(Tax Shield). Only the interest tax shield adds value. Bankruptcy costs, agency costs, and financial distress costs all REDUCE firm value relative to the no-friction MM world. Answer: <strong>(c) Interest tax shield</strong>'},
+
+  {type:'mc_asgn',label:'MC 8',title:'IRR vs Hurdle Rate',
+    q:'A project has IRR = 14% and WACC = 11%. A surprise regulatory change doubles the firm\'s cost of debt, pushing WACC to 15%. The project should now:',
+    opts:['Be accepted — IRR still exceeds the original WACC','Be rejected — IRR now falls below the new WACC','Be accepted — NPV is still positive at original WACC','Cannot determine without recalculating NPV'],ans:1,
+    solution:'The decision rule: accept if IRR > current WACC. IRR = 14% < new WACC = 15%. The project\'s cash flows haven\'t changed, but the required return rose above what the project earns. NPV is now negative. Reject. Answer: <strong>(b) Reject — IRR now below WACC</strong>'},
+
+  {type:'mc_asgn',label:'MC 9',title:'Beta vs Sigma — CAPM Pricing',
+    q:'Stock Gamma has β=0.8 and σ=35%. Stock Delta has β=0.8 and σ=15%. Under CAPM, their required returns are:',
+    opts:['Different — lower σ commands lower return (less risky)','The same — only systematic risk (beta) matters','Different — higher σ commands higher return','Cannot compare without correlation data'],ans:1,
+    solution:'Under CAPM, only systematic risk (beta) is priced. Idiosyncratic risk (the part that contributes to σ but not to beta) is diversifiable and earns no return premium. Both stocks have β=0.8 → same E[R] = Rf + 0.8×MRP. Answer: <strong>(b) The same — only beta matters</strong>'},
+
+  {type:'mc_asgn',label:'MC 10',title:'SML Position — Overpriced or Underpriced',
+    q:'A stock plots BELOW the Security Market Line (SML). Given its beta, the market is pricing it such that its expected return is LOWER than CAPM predicts. This means the stock is:',
+    opts:['Underpriced — it offers more return than it should','Overpriced — it offers less return than it should for its risk','Correctly priced — the market is always right','Impossible — no stock can plot off the SML in equilibrium'],ans:1,
+    solution:'Below SML: actual expected return < CAPM-required return. This means the stock is OVERPRICED (you\'re paying too much for its level of systematic risk). You\'d earn less than the fair compensation for beta. A rational investor would not hold it (short it instead). Answer: <strong>(b) Overpriced</strong>'},
+
+  {type:'mc_asgn',label:'MC 11',title:'Trade-Off Theory — Optimal Leverage',
+    q:'Under the trade-off theory of capital structure, a firm will INCREASE its optimal debt ratio if:',
+    opts:['Its asset volatility increases (more volatile cash flows)','Its corporate tax rate increases','Its probability of bankruptcy increases','Its operating costs become more variable'],ans:1,
+    solution:'A higher tax rate increases the value of the interest tax shield, shifting the optimal leverage point higher (more debt is beneficial). Higher volatility, higher bankruptcy probability, or more variable costs all REDUCE optimal leverage (higher bankruptcy costs offset the tax shield). Answer: <strong>(b) Corporate tax rate increases</strong>'},
+
+  {type:'mc_asgn',label:'MC 12',title:'Cost of Debt in WACC',
+    q:'The "cost of debt" (Rd) used in the WACC formula should be:',
+    opts:['The coupon rate on the firm\'s outstanding bonds','The yield to maturity on the firm\'s new debt issuance (pre-tax)','The yield to maturity on the firm\'s new debt issuance (after-tax)','The risk-free rate'],ans:1,
+    solution:'WACC uses the PRE-TAX yield to maturity on NEW debt (marginal cost). The tax adjustment is applied within the WACC formula itself: Rd×(1−T). Using the old coupon rate ignores current market conditions. Using after-tax Rd directly would double-count the tax benefit. Answer: <strong>(b) YTM on new debt, pre-tax</strong>'},
+
+  {type:'mc_asgn',label:'MC 13',title:'Pure-Play — What You Need From Comparables',
+    q:'In the pure-play approach to estimating WACC, the three comparable firms must have:',
+    opts:['Similar capital structures to the target firm','Similar asset betas (same underlying business risk)','Similar market capitalizations','Similar credit ratings'],ans:1,
+    solution:'You need similar ASSET RISK (same industry/business model). Capital structures can differ — you unlever each comparable\'s beta to remove their leverage, then relever to the target\'s structure. Size and credit rating are irrelevant to business risk. Answer: <strong>(b) Similar asset betas / business risk</strong>'},
+
+  {type:'mc_asgn',label:'MC 14',title:'Hamada — Solve for D/E',
+    q:'A firm\'s asset beta is 0.8 and tax rate is 25%. After taking on debt, its equity beta rises to 1.4. What is the firm\'s new D/E ratio?',
+    opts:['0.667','0.800','1.000','1.333'],ans:2,
+    solution:'βE = βA×[1+(1−T)(D/E)] → 1.4 = 0.8×[1+0.75×(D/E)] → 1.4/0.8 = 1.75 → 1+0.75×(D/E) = 1.75 → 0.75×(D/E) = 0.75 → <strong>D/E = 1.00</strong> → Answer: (c)'},
+
+  {type:'mc_asgn',label:'MC 15',title:'CML — Efficient Portfolio Return',
+    q:'The market portfolio has E[Rm]=10%, σm=15%, and Rf=4%. What is the expected return of an efficient portfolio (on the CML) with standard deviation σp=10%?',
+    opts:['6.67%','8.00%','8.67%','10.00%'],ans:1,
+    solution:'CML: E[Rp] = Rf + [(E[Rm]−Rf)/σm] × σp = 4% + [(10%−4%)/15%] × 10% = 4% + [0.40] × 10% = 4% + 4.0% = <strong>8.00%</strong>. The slope = Sharpe ratio of market = 6%/15% = 0.40. Answer: <strong>(b) 8.00%</strong>'},
+
+  // ── 4 QUANTITATIVE ────────────────────────────────────
+  {type:'work',label:'Quant 1',title:'Full WACC Estimation: SpaceCo Spin-Off',
+    problem:'SpaceCo is spinning off its satellite internet division. The new entity will have a 35% debt / 65% equity capital structure. Tax rate = 21% throughout.\n\nThree publicly-listed comparables:\n  • ViaSat:    equity β = 1.60,  D/E = 0.25\n  • HughesNet: equity β = 1.35,  D/E = 0.15\n  • Eutelsat:  equity β = 1.80,  D/E = 0.40\n\nMarket data: Rf = 4%, market risk premium = 6%, BBB credit spread = 1.5%\nAssume βD = 0 (debt beta = 0) for all calculations.\n\n(a) Unlever each comparable\'s equity beta → asset beta\n(b) Average the three asset betas\n(c) Relever the average asset beta to SpaceCo\'s 35/65 structure\n(d) Cost of equity for SpaceCo (CAPM)\n(e) Cost of debt for SpaceCo (Rf + BBB credit spread, nominal, pre-tax)\n(f) WACC for SpaceCo',
+    solution:'<strong>(a) Unlever each beta:  βA = βE / [1 + (1−T)(D/E)]</strong>\nViaSat:    βA = 1.60 / [1 + 0.79×0.25] = 1.60/1.1975 = <strong>1.3361</strong>\nHughesNet: βA = 1.35 / [1 + 0.79×0.15] = 1.35/1.1185 = <strong>1.2070</strong>\nEutelsat:  βA = 1.80 / [1 + 0.79×0.40] = 1.80/1.3160 = <strong>1.3678</strong>\n\n<strong>(b) Average βA = (1.3361 + 1.2070 + 1.3678) / 3 = 3.9109/3 = <strong>1.3036</strong>\n\n<strong>(c) Relever to SpaceCo D/E = 35/65 = 0.5385:</strong>\nβE = 1.3036 × [1 + 0.79 × 0.5385] = 1.3036 × 1.4254 = <strong>1.858</strong>\n\n<strong>(d) Cost of equity (CAPM):</strong>\nRe = 4% + 1.858 × 6% = 4% + 11.15% = <strong>15.15%</strong>\n\n<strong>(e) Cost of debt (nominal):</strong>\nRd = Rf + BBB spread = 4% + 1.5% = <strong>5.5%</strong>\n\n<strong>(f) WACC:</strong>\nWACC = 0.65 × 15.15% + 0.35 × 5.5% × (1−0.21)\n     = 9.85% + 1.52% = <strong>11.37%</strong>',
+    concept:'Pure-play procedure: (1) Find firms with same BUSINESS risk. (2) UNLEVER their betas to remove their capital structure — βA = βE/[1+(1−T)(D/E)]. (3) AVERAGE asset betas. (4) RELEVER to your target structure — βE = βA×[1+(1−T)(D/E)]. (5) Use CAPM for Re. (6) Cost of debt = Rf + credit spread. (7) WACC = weighted average after-tax.'},
+
+  {type:'work',label:'Quant 2',title:'Capital Structure: MM with Taxes (Solve for Many Variables)',
+    problem:'Meridian Corp is all-equity with 100 shares outstanding. Its after-tax free cash flow is $180/year in perpetuity. Asset beta = 0.5, Rf = 3%, market risk premium = 6%, tax rate = 25%.\n\n(a) What is Meridian\'s current (all-equity) firm value and stock price?\n(b) Meridian announces it will issue $600 of permanent risk-free debt and repurchase shares. By how much does the announcement increase firm value?\n(c) What is the new stock price immediately after the announcement (before the buyback)?\n(d) How many shares does Meridian repurchase with the $600 proceeds?\n(e) After the buyback, what is the new WACC?\n    [Shortcut: WACC = rA × (1 − t×D/VL)]',
+    solution:'<strong>(a) All-equity value:</strong>\nrA = Rf + βA×MRP = 3% + 0.5×6% = <strong>6%</strong>\nVU = FCF/rA = $180/0.06 = <strong>$3,000</strong>\nP0 = $3,000/100 = <strong>$30.00/share</strong>\n\n<strong>(b) PV of tax shield = t×D = 0.25×$600 = <strong>$150</strong>\nFirm value increases by $150\n\n<strong>(c) New total firm value = VU + PV(TS) = $3,000 + $150 = $3,150</strong>\nShares outstanding: still 100 (announcement hasn\'t happened yet)\nNew stock price = $3,150/100 = <strong>$31.50/share</strong>\n(Stock price jumps on announcement — existing shareholders capture the full tax shield.)\n\n<strong>(d) Shares repurchased</strong> = $600/$31.50 = <strong>19.05 shares</strong>\nShares remaining = 100 − 19.05 = <strong>80.95 shares</strong>\n\n<strong>(e) New WACC:</strong>\nWACC = rA × (1 − t×D/VL) = 6% × (1 − 0.25×600/3150)\n     = 6% × (1 − 0.04762) = 6% × 0.9524 = <strong>5.71%</strong>\n\nVerify via standard formula: E = $3,150−$600 = $2,550\nWACC = (2550/3150)×Re + (600/3150)×3%×0.75 where Re = 3% + βE×6%\nβE = 0.5×(1+0.75×600/2550) = 0.5×1.1765 = 0.588\nRe = 3%+0.588×6% = 6.53%\nWACC = 0.8095×6.53% + 0.1905×2.25% = 5.287%+0.429% = 5.71% ✓',
+    concept:'Key insights: (1) VL = VU + t×D — every dollar of debt adds t cents of value via tax shield. (2) Stock price jumps at ANNOUNCEMENT (shareholders capture the gain before buyback). (3) Shares repurchased at new (higher) price, not old price. (4) WACC falls because cheap debt plus tax shield benefit — shortcut WACC = rA×(1−t×D/VL) is elegant.'},
+
+  {type:'work',label:'Quant 3',title:'Portfolio Theory: Negative Correlation & Optimal Weights',
+    problem:'You have two stocks and a risk-free asset:\n  • Stock A: E[R]=10%, σ=20%\n  • Stock B: E[R]=25%, σ=50%\n  • Correlation ρAB = −0.20\n  • Risk-free rate = 4%\n\n(a) You invest 60% in A and 40% in B. What are the portfolio expected return and standard deviation?\n\n(b) You want a portfolio using ONLY A and B with σ exactly equal to 20% (same as Stock A alone). What weight in A achieves this? (Hint: set up σ²p = 0.04 and solve the quadratic. The non-trivial solution ≠ 100%.)\n\n(c) For the portfolio in (b), calculate the Sharpe ratio. Compare it to holding 100% in Stock A. What does this tell you?\n\n(d) Your classmate says: "Stock B has a much higher expected return — I should put 100% in B." What is wrong with this reasoning? Give the Sharpe ratio of 100% in B.',
+    solution:'<strong>(a) 60% in A, 40% in B:</strong>\nE[Rp] = 0.60×10% + 0.40×25% = 6% + 10% = <strong>16.00%</strong>\nσ²p = 0.36×0.04 + 0.16×0.25 + 2×0.6×0.4×(−0.20)×0.20×0.50\n    = 0.0144 + 0.0400 − 0.0096 = 0.0448\nσp = √0.0448 = <strong>21.17%</strong>\n\n<strong>(b) Solve for w where σp = 20%:</strong>\nσ²p = w²(0.04) + (1−w)²(0.25) + 2w(1−w)(−0.20)(0.20)(0.50) = 0.04\nExpanding: 0.33w² − 0.54w + 0.21 = 0\nDiscriminant: 0.54² − 4×0.33×0.21 = 0.2916 − 0.2772 = 0.0144\nw = (0.54 ± 0.12) / 0.66\nw₁ = 0.66/0.66 = 1.00 (trivial: 100% in A) | w₂ = 0.42/0.66 = <strong>63.6% in A, 36.4% in B</strong>\n\n<strong>(c) Portfolio in (b):</strong>\nE[Rp] = 0.636×10% + 0.364×25% = 6.36% + 9.10% = <strong>15.45%</strong>\nSharpe (portfolio) = (15.45% − 4%) / 20% = <strong>0.573</strong>\nSharpe (100% A) = (10% − 4%) / 20% = <strong>0.300</strong>\n→ Same risk, BUT 57% higher Sharpe ratio. Negative correlation creates enormous diversification gains.\n\n<strong>(d) 100% in B:</strong>\nSharpe = (25% − 4%) / 50% = 21%/50% = <strong>0.420</strong>\nWrong reasoning because: (1) σ=50% is 2.5× the risk of A and the portfolio. (2) Sharpe of 0.42 < portfolio Sharpe of 0.573 — you get LESS return per unit of risk despite B\'s higher expected return. (3) Negative correlation means combining A and B is more efficient than either alone.',
+    concept:'Negative correlation is highly valuable in a portfolio — it reduces risk below a simple weighted average. The "same σ as Stock A" portfolio achieves 15.45% return vs A\'s 10% return — a huge improvement for zero extra risk. The Sharpe ratio (return per unit of risk) is the right metric for comparing portfolios, not expected return alone.'},
+
+  {type:'work',label:'Quant 4',title:'FCF & NPV: Growing Revenue, Salvage Value',
+    problem:'EcoEnergy is evaluating a new solar facility:\n  • Initial equipment cost: $15M (depreciated straight-line over 5 years)\n  • Revenue: $6M in Year 1, growing at 4%/year through Year 5\n  • Cash operating costs: 30% of revenue each year\n  • Working capital: $2M investment in Year 1, fully recovered in Year 5\n  • Tax rate: 25%\n  • Discount rate: 10%\n  • Salvage value: $3M at end of Year 5 (equipment fully depreciated → book value = $0)\n\n(a) What is the annual depreciation tax shield?\n(b) Build the FCF for each year.\n(c) Calculate NPV. Should EcoEnergy invest?\n(d) A supplier offers to cut operating costs from 30% to 25% of revenue. How much additional NPV does this create?',
+    solution:'<strong>(a) Depreciation = $15M/5 = $3M/yr\nDepreciation tax shield = 25% × $3M = <strong>$0.75M/yr</strong>\n\n<strong>(b) FCF = (Rev − Cash Costs)(1−t) + t×Dep + ΔNWC + CapEx</strong>\nAfter-tax salvage (Y5) = $3M × (1−0.25) = $2.25M (fully taxable since book value = 0)\n\n  Y0: FCF = <strong>−$15.00M</strong>  (CapEx only)\n  Y1: Rev=6.000, Costs=1.800: (6−1.8)×0.75 + 0.75 − 2.00 = 3.15+0.75−2.00 = <strong>$1.90M</strong>\n  Y2: Rev=6.240, Costs=1.872: (6.24−1.872)×0.75 + 0.75 = 3.276+0.75 = <strong>$4.03M</strong>\n  Y3: Rev=6.490, Costs=1.947: (6.49−1.947)×0.75 + 0.75 = 3.407+0.75 = <strong>$4.16M</strong>\n  Y4: Rev=6.749, Costs=2.025: (6.749−2.025)×0.75 + 0.75 = 3.543+0.75 = <strong>$4.29M</strong>\n  Y5: Rev=7.019, Costs=2.106: (7.019−2.106)×0.75 + 0.75 + 2.00 + 2.25 = 3.685+0.75+2+2.25 = <strong>$8.69M</strong>\n\n<strong>(c) NPV:</strong>\nNPV = −15 + 1.90/1.10 + 4.03/1.21 + 4.16/1.331 + 4.29/1.4641 + 8.69/1.6105\n    = −15 + 1.727 + 3.327 + 3.123 + 2.931 + 5.396\n    = <strong>+$1.50M → ACCEPT ✅</strong>\n\n<strong>(d) Additional value from cost reduction (30% → 25%):</strong>\nSavings = 5% × Revenue each year, after-tax = 5% × Rev × (1−0.25) = 3.75% × Rev\nY1: 3.75%×6.000 = 0.225, Y2: 0.234, Y3: 0.243, Y4: 0.253, Y5: 0.263\nPV = 0.225/1.1 + 0.234/1.21 + 0.243/1.331 + 0.253/1.4641 + 0.263/1.6105\n   = 0.205+0.193+0.183+0.173+0.163 = <strong>$0.92M additional NPV</strong>\nNew total NPV = $1.50M + $0.92M = <strong>$2.42M</strong>',
+    concept:'Three key additions vs. a standard NPV problem: (1) Growing revenue requires calculating each year separately. (2) After-tax salvage = Market Value × (1−t) when fully depreciated (book value = 0, so entire sale price is a taxable gain). (3) The cost reduction analysis is additive — compute the PV of the savings stream separately and add to base NPV.'},
+  ]},
 ];
 
 // ============================================================
@@ -1738,6 +1839,32 @@ const ASSIGNMENT_ANSWERS = {
     {answer:50,    fmt:'dollar',  tolerance:0.5,  label:'(a) Downside breakeven ($)',     hint:'= Strike − total premium = 60−10'},
   ]},
   'final_25': { answer:0.522,  fmt:'number',  tolerance:0.01, label:'Call option delta N(d₁)',              hint:'d1=(ln(49/50)+(5%+2%)×0.3846)/(20%×√0.3846); then NORM.S.DIST(d1,TRUE)' },
+  // ── Practice Final 2 ──
+  'final2_15': { parts:[
+    {answer:1.3361, fmt:'number', tolerance:0.02, label:'(a) ViaSat asset beta βA',         hint:'βA = 1.60/[1+0.79×0.25]'},
+    {answer:1.2070, fmt:'number', tolerance:0.02, label:'(a) HughesNet asset beta βA',      hint:'βA = 1.35/[1+0.79×0.15]'},
+    {answer:1.3678, fmt:'number', tolerance:0.02, label:'(a) Eutelsat asset beta βA',       hint:'βA = 1.80/[1+0.79×0.40]'},
+    {answer:1.3036, fmt:'number', tolerance:0.02, label:'(b) Average asset beta',           hint:'Simple average of the three'},
+    {answer:1.858,  fmt:'number', tolerance:0.05, label:'(c) Relevered βE at 35/65',        hint:'βE = avg_βA×[1+0.79×(35/65)]'},
+    {answer:11.37,  fmt:'percent',tolerance:0.5,  label:'(f) SpaceCo WACC (%)',             hint:'0.65×Re + 0.35×5.5%×(1−0.21)'},
+  ]},
+  'final2_16': { parts:[
+    {answer:3000,  fmt:'dollar',  tolerance:20,   label:'(a) VU — unlevered firm value ($)', hint:'VU = FCF/rA = 180/0.06'},
+    {answer:150,   fmt:'dollar',  tolerance:5,    label:'(b) Increase in firm value ($)',    hint:'PV(Tax Shield) = t×D = 0.25×600'},
+    {answer:31.50, fmt:'dollar',  tolerance:0.05, label:'(c) New stock price ($)',           hint:'VL/shares = 3150/100'},
+    {answer:5.71,  fmt:'percent', tolerance:0.2,  label:'(e) New WACC (%)',                 hint:'WACC = 6%×(1−0.25×600/3150)'},
+  ]},
+  'final2_17': { parts:[
+    {answer:16.0,  fmt:'percent', tolerance:0.3,  label:'(a) Portfolio E[R] at 60/40 (%)', hint:'0.6×10% + 0.4×25%'},
+    {answer:21.17, fmt:'percent', tolerance:0.5,  label:'(a) Portfolio σ at 60/40 (%)',    hint:'√(0.0144+0.04−0.0096)'},
+    {answer:63.6,  fmt:'percent', tolerance:1.0,  label:'(b) Weight in A for σ=20% (%)',   hint:'Solve 0.33w²−0.54w+0.21=0'},
+    {answer:0.573, fmt:'number',  tolerance:0.02, label:'(c) Sharpe ratio of portfolio (b)',hint:'(15.45%−4%)/20%'},
+  ]},
+  'final2_18': { parts:[
+    {answer:1.90,  fmt:'dollar',  tolerance:0.05, label:'(b) Year 1 FCF ($M)',              hint:'(6−1.8)×0.75 + 0.75 − 2.00'},
+    {answer:1.50,  fmt:'dollar',  tolerance:0.15, label:'(c) NPV ($M)',                     hint:'−15 + NPV(10%, FCFs Y1−Y5)'},
+    {answer:2.42,  fmt:'dollar',  tolerance:0.2,  label:'(d) New NPV with 25% costs ($M)', hint:'Add PV of cost savings: 3.75%×Rev×each year'},
+  ]},
 };
 
 function parseAnswer(raw, fmt) {
